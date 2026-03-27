@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kertolasku-oppimispeli</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            max-width: 600px;
+        }
+
+        /* Osa 1: Yläosa */
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 40px;
+            padding: 5px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        #error-message {
+            color: red;
+            font-weight: bold;
+            height: 20px;
+            margin-bottom: 20px;
+            visibility: hidden;
+        }
+
+        /* Osa 2: Pisteet */
+        #dot-container {
+            margin: 20px 0;
+            display: grid;
+            gap: 8px;
+            justify-content: start;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+        }
+
+        /* Osa 3: Tulosrivi */
+        .bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            min-height: 40px;
+        }
+
+        #equation {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 5px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="input-row">
+        <input type="text" id="num1" maxlength="2">
+        <span>&middot;</span>
+        <input type="text" id="num2" maxlength="2">
+        <button onclick="naytaKertolasku()">Näytä</button>
+    </div>
+
+    <div id="error-message">Anna luku 1-10 eli kirjoita vain numeroita</div>
+
+    <div id="dot-container"></div>
+
+    <div class="bottom-row">
+        <div id="equation"></div>
+        <button onclick="tyhjenna()">Tyhjennä</button>
+    </div>
+
+    <script>
+        function naytaKertolasku() {
+            const val1 = document.getElementById('num1').value;
+            const val2 = document.getElementById('num2').value;
+            const errorDiv = document.getElementById('error-message');
+            const dotContainer = document.getElementById('dot-container');
+            const equationDiv = document.getElementById('equation');
+
+            // Muunnetaan luvuiksi
+            const n1 = parseInt(val1);
+            const n2 = parseInt(val2);
+
+            // Validointi: onko numero, onko 1-10 välillä
+            if (isNaN(n1) || isNaN(n2) || n1 < 1 || n1 > 10 || n2 < 1 || n2 > 10) {
+                errorDiv.style.visibility = 'visible';
+                setTimeout(() => {
+                    errorDiv.style.visibility = 'hidden';
+                }, 5000);
+                return;
+            }
+
+            // Tyhjennetään vanhat
+            dotContainer.innerHTML = '';
+            
+            // Luodaan pisteet (grid)
+            dotContainer.style.gridTemplateRows = `repeat(${n1}, 20px)`;
+            dotContainer.style.gridTemplateColumns = `repeat(${n2}, 20px)`;
+
+            for (let i = 0; i < n1 * n2; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.setAttribute('role', 'img'); // Saavutettavuus
+                dotContainer.appendChild(dot);
+            }
+
+            // Näytetään yhtälö
+            equationDiv.textContent = `${n1} · ${n2} = ${n1 * n2}`;
+        }
+
+        function tyhjenna() {
+            document.getElementById('num1').value = '';
+            document.getElementById('num2').value = '';
+            document.getElementById('dot-container').innerHTML = '';
+            document.getElementById('equation').textContent = '';
+            document.getElementById('error-message').style.visibility = 'hidden';
+        }
+    </script>
+
+</body>
+</html>
